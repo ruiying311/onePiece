@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>你是海贼王里哪个人物？</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+    background:
+      radial-gradient(circle at 20% 10%, rgba(180, 140, 80, 0.25), transparent 26%),
+      radial-gradient(circle at 85% 18%, rgba(120, 70, 40, 0.18), transparent 22%),
+      radial-gradient(circle at 15% 85%, rgba(160, 110, 60, 0.22), transparent 28%),
+      radial-gradient(circle at 75% 90%, rgba(90, 50, 20, 0.18), transparent 24%),
+      linear-gradient(180deg, #f3e3c0 0%, #ecd3a7 45%, #e5c893 100%);
+    color: #3b2a1a;
+    min-height: 100vh;
+    padding: 18px 14px 28px;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><g fill='none' stroke='%238b6f47' stroke-width='0.6' opacity='0.22'><circle cx='80' cy='80' r='18'/><circle cx='80' cy='80' r='30'/><path d='M20 80h120M80 20v120'/></g></svg>"),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><g fill='none' stroke='%237a5a32' stroke-width='0.5' opacity='0.18'><path d='M10 100c20-14 40-6 60-18s30-22 40-32'/></g></svg>"),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90'><g fill='%236b4a22' opacity='0.12'><path d='M45 15c10 12 22 20 22 34 0 12-10 22-22 22s-22-10-22-22c0-14 12-22 22-34z'/></g></svg>");
+    background-size: 160px, 220px, 130px;
+    background-position: 8% 12%, 88% 42%, 50% 74%;
+    background-repeat: no-repeat;
+    z-index: 0;
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .header {
+    text-align: center;
+    padding: 18px 10px 8px;
+  }
+
+  .logo-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .skull-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #2c1810;
+    color: #f5d76e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 0 0 2px #8b6f47, 0 6px 14px rgba(60, 30, 10, 0.25);
+  }
+
+  .compass-mini {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid #8b6f47;
+    position: relative;
+    background: rgba(255, 248, 230, 0.45);
+  }
+
+  .compass-mini::before,
+  .compass-mini::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1px;
+    height: 10px;
+    background: #5a3a18;
+    transform-origin: center;
+  }
+
+  .compass-mini::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+
+  .compass-mini::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+  }
+
+  h1 {
+    font-size: 30px;
+    color: #2c1810;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-shadow:
+      0 2px 0 #f5d76e,
+      0 0 0 #8b3a2a,
+      0 4px 10px rgba(60, 30, 10, 0.25);
+    margin-bottom: 6px;
+  }
+
+  .sub-title {
+    color: #5a3a18;
+    font-size: 14px;
+    letter-spacing: 4px;
+    margin-bottom: 14px;
+  }
+
+  .progress {
+    width: 100%;
+    height: 10px;
+    background: rgba(139, 111, 71, 0.28);
+    border-radius: 99px;
+    border: 1px solid #8b6f47;
+    overflow: hidden;
+    margin-bottom: 18px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: 4%;
+    background: linear-gradient(90deg, #8b3a2a, #b8422a, #f5d76e);
+    border-radius: 99px;
+    transition: width 0.3s ease;
+  }
+
+  .quiz-card {
+    background: linear-gradient(180deg, #fff7e1 0%, #fbe7bf 100%);
+    border: 2px solid #8b6f47;
+    border-radius: 22px;
+    padding: 22px 18px 20px;
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 248, 230, 0.6),
+      0 18px 40px rgba(60, 30, 10, 0.22);
+    position: relative;
+  }
+
+  .quiz-card::before,
+  .quiz-card::after {
+    content: "";
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border: 2px dashed rgba(139, 111, 71, 0.35);
+    border-radius: 50%;
+  }
+
+  .quiz-card::before {
+    top: -28px;
+    right: -22px;
+  }
+
+  .quiz-card::after {
+    bottom: -26px;
+    left: -20px;
+    width: 52px;
+    height: 52px;
+  }
+
+  .question-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .tag {
+    background: #8b3a2a;
+    color: #f5d76e;
+    padding: 6px 12px;
+    border-radius: 99px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .page-count {
+    color: #5a3a18;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .question-text {
+    font-size: 20px;
+    line-height: 1.5;
+    color: #2c1810;
+    font-weight: 800;
+    margin-bottom: 18px;
+    min-height: 60px;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .option {
+    background: #fffaf0;
+    border: 2px solid #d9b382;
+    border-radius: 16px;
+    padding: 14px 14px 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    text-align: left;
+    font-size: 16px;
+    color: #3b2a1a;
+    transition: all 0.2s ease;
+    box-shadow: 0 6px 14px rgba(90, 60, 20, 0.12);
+  }
+
+  .option:hover {
+    border-color: #b8422a;
+    transform: translateY(-2px);
+  }
+
+  .option.selected {
+    background: linear-gradient(180deg, #a53522, #7c2418);
+    border-color: #f5d76e;
+    color: #fff7e1;
+    box-shadow: 0 10px 24px rgba(139, 58, 42, 0.35);
+  }
+
+  .num {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #8b6f47;
+    color: #fff7e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 16px;
+    flex-shrink: 0;
+    border: 2px solid #5a3a18;
+  }
+
+  .option.selected .num {
+    background: #f5d76e;
+    color: #7c2418;
+    border-color: #fff7e1;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 14px;
+    margin-top: 24px;
+  }
+
+  .btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: 14px;
+    border: 2px solid #5a3a18;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .btn-prev {
+    background: #fbe7bf;
+    color: #5a3a18;
+  }
+
+  .btn-prev:hover {
+    background: #f5d76e;
+  }
+
+  .btn-next {
+    background: linear-gradient(180deg, #a53522, #7c2418);
+    color: #f5d76e;
+    box-shadow: 0 10px 24px rgba(139, 58, 42, 0.35);
+  }
+
+  .btn-next:hover {
+    transform: translateY(-2px);
+  }
+
+  .btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .result-card {
+    background: linear-gradient(180deg, #fff7e1 0%, #fbe7bf 100%);
+    border: 2px solid #8b6f47;
+    border-radius: 24px;
+    padding: 26px 20px 24px;
+    text-align: center;
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 248, 230, 0.6),
+      0 20px 46px rgba(60, 30, 10, 0.25);
+  }
+
+  .result-title {
+    font-size: 14px;
+    color: #5a3a18;
+    letter-spacing: 4px;
+    margin-bottom: 10px;
+  }
+
+  .result-name {
+    font-size: 32px;
+    color: #7c2418;
+    font-weight: 900;
+    text-shadow: 0 2px 0 #f5d76e;
+    margin-bottom: 16px;
+  }
+
+  .result-img {
+    width: 220px;
+    height: 220px;
+    border-radius: 24px;
+    border: 3px solid #8b6f47;
+    box-shadow: 0 14px 30px rgba(60, 30, 10, 0.25);
+    object-fit: cover;
+    background: #fff7e1;
+    margin-bottom: 18px;
+  }
+
+  .result-desc {
+    background: rgba(255, 247, 225, 0.75);
+    border: 1px dashed #8b6f47;
+    border-radius: 18px;
+    padding: 16px;
+    text-align: left;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #3b2a1a;
+  }
+
+  .result-desc strong {
+    color: #7c2418;
+  }
+
+  .tip {
+    margin-top: 16px;
+    font-size: 12px;
+    color: #7a5a32;
+    line-height: 1.6;
+  }
+
+  .restart {
+    margin-top: 20px;
+    width: 100%;
+    padding: 14px;
+    border-radius: 14px;
+    border: 2px solid #5a3a18;
+    background: linear-gradient(180deg, #a53522, #7c2418);
+    color: #f5d76e;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    cursor: pointer;
+  }
+
+  .ship-decoration {
+    position: absolute;
+    right: 18px;
+    top: 18px;
+    width: 56px;
+    height: 44px;
+    opacity: 0.35;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  @media (max-width: 380px) {
+    h1 {
+      font-size: 26px;
+    }
+
+    .question-text {
+      font-size: 18px;
+    }
+
+    .option {
+      font-size: 15px;
+      padding: 12px 12px 12px 14px;
+    }
+
+    .result-img {
+      width: 180px;
+      height: 180px;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo-row">
+        <div class="skull-icon">☠</div>
+        <div class="compass-mini"></div>
+      </div>
+      <h1>你是海贼王里哪个人物？</h1>
+      <div class="sub-title">ONE PIECE PERSONALITY TEST</div>
+      <div class="progress">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <div id="quizWrap">
+      <div class="quiz-card">
+        <svg class="ship-decoration" viewBox="0 0 64 48" fill="none">
+          <path d="M8 40 L56 40 L50 28 L42 20 L34 26 L24 22 L14 30 Z" fill="#5a3a18"/>
+          <rect x="28" y="10" width="4" height="16" fill="#5a3a18"/>
+          <rect x="36" y="14" width="4" height="12" fill="#5a3a18"/>
+          <path d="M32 10 L40 14 L32 18 Z" fill="#8b3a2a"/>
+          <path d="M40 14 L46 18 L40 22 Z" fill="#8b3a2a"/>
+        </svg>
+
+        <div class="question-head">
+          <span class="tag">冒险测试</span>
+          <span class="page-count" id="pageCount">第 1 题 / 共 24 题</span>
+        </div>
+
+        <div class="question-text" id="questionText"></div>
+
+        <div class="options" id="optionsBox"></div>
+
+        <div class="btn-row">
+          <button class="btn btn-prev" id="prevBtn">返回上一题</button>
+          <button class="btn btn-next" id="nextBtn">下一题</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="resultBox" class="hidden">
+      <div class="result-card">
+        <div class="result-title">你的本命角色是</div>
+        <div class="result-name" id="resultName"></div>
+        <img class="result-img" id="resultImg" src="" alt="Q版角色" />
+        <div class="result-desc" id="resultDesc"></div>
+        <div class="tip">本测试为同人趣味性格测试，仅供娱乐，与官方无关。</div>
+        <button class="restart" onclick="restartQuiz()">重新测试</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+const questions = [
+  { q: "周末朋友约你冒险式出行，你会？", options: ["立刻答应，超期待！", "先查攻略、评估风险", "担心大家会不会累，照顾每个人感受", "看看成本、时间合不合适再决定"], key: ["A","B","C","D"] },
+  { q: "和朋友吵架，你的第一反应？", options: ["直接说清楚，不藏情绪", "冷静复盘对错，讲道理", "先照顾对方情绪，害怕伤害彼此", "暂时避开，不想惹麻烦"], key: ["A","B","C","D"] },
+  { q: "你的人生优先级排序？", options: ["自由 & 梦想", "目标 & 成就", "家人 & 伙伴", "安稳 & 生存"], key: ["A","B","C","D"] },
+  { q: "团队遇到危机，你更倾向？", options: ["带头冲，相信直觉", "快速想方案，指挥分工", "安抚大家情绪，稳住心态", "先评估有没有退路，降低损失"], key: ["A","B","C","D"] },
+  { q: "别人对你的评价，你更在意？", options: ["是不是够酷、够自由", "能力强不靠谱", "是不是温柔靠谱", "会不会吃亏、被算计"], key: ["A","B","C","D"] },
+  { q: "看到陌生人受欺负，你会？", options: ["直接上前帮忙", "冷静找办法 / 找证据", "心疼对方，温柔安慰", "先自保，谨慎出手"], key: ["A","B","C","D"] },
+  { q: "面对很难完成的目标，你？", options: ["不管多难，我一定要做到", "拆分计划慢慢推进", "怕自己让大家失望", "觉得代价太大就放弃"], key: ["A","B","C","D"] },
+  { q: "你更讨厌哪一种？", options: ["被束缚、失去自由", "愚蠢、不讲逻辑", "冷漠、背叛感情", "白白吃亏、被利用"], key: ["A","B","C","D"] },
+  { q: "交朋友你优先看？", options: ["有趣、敢一起疯", "靠谱、头脑在线", "善良、真心待人", "不坑自己、三观合拍"], key: ["A","B","C","D"] },
+  { q: "被误会时，你会？", options: ["急着辩解，不服气", "拿出证据理性解释", "难过委屈，不想争辩", "懒得解释，远离对方"], key: ["A","B","C","D"] },
+  { q: "有一笔意外奖金，你会？", options: ["拿去体验、冒险、追梦", "投资 / 用来提升自己", "分给喜欢的人、给家人买礼物", "存起来以备不时之需"], key: ["A","B","C","D"] },
+  { q: "你更容易被什么打动？", options: ["不顾一切的热血梦想", "强大清醒的头脑", "默默付出的温柔", "踏实安稳的承诺"], key: ["A","B","C","D"] },
+  { q: "做决定的时候，你大多靠？", options: ["直觉和本心", "逻辑分析利弊", "感受和人情", "风险和收益"], key: ["A","B","C","D"] },
+  { q: "如果伙伴拖累了你，你？", options: ["不怪他，一起扛", "帮他调整、解决问题", "心疼他，包容体谅", "会考虑要不要继续同行"], key: ["A","B","C","D"] },
+  { q: "你喜欢的相处模式？", options: ["随性自在，不用拘束", "高效干脆，有事说事", "温暖贴心，互相照顾", "保持边界，互不麻烦"], key: ["A","B","C","D"] },
+  { q: "面对强大对手，你？", options: ["直接开战，绝不认输", "找弱点，智取不硬刚", "尽量避免冲突，求和", "打不过就选择撤退"], key: ["A","B","C","D"] },
+  { q: "你身上最大的短板？", options: ["冲动，很少想后果", "太理性，缺少共情", "心软，容易被拿捏", "顾虑太多，不敢尝试"], key: ["A","B","C","D"] },
+  { q: "别人拜托你帮忙，你？", options: ["爽快答应，义气优先", "看我能不能做到，量力而行", "不忍心拒绝，容易妥协", "先想会不会给自己添麻烦"], key: ["A","B","C","D"] },
+  { q: "回忆过往，你更多是？", options: ["大胆热烈，不留遗憾", "步步规划，目标清晰", "感恩陪伴，看重回忆", "稳中求稳，避开坑"], key: ["A","B","C","D"] },
+  { q: "你更愿意成为？", options: ["引领大家向前的冒险家", "冷静运筹的智囊强者", "治愈守护大家的人", "保护好自己的聪明人"], key: ["A","B","C","D"] },
+  { q: "发现朋友做错事，你？", options: ["直白骂醒他", "客观讲清后果", "温柔劝导，怕他受伤", "不多管闲事，保持距离"], key: ["A","B","C","D"] },
+  { q: "独处的时候你？", options: ["无聊，想找人一起玩", "思考计划、复盘事情", "安安静静享受治愈", "安排琐事、规划生活"], key: ["A","B","C","D"] },
+  { q: "如果梦想很难实现，你？", options: ["永不放弃，一直冲", "调整路线换方式", "纠结难过，舍不得放下", "及时止损，换现实目标"], key: ["A","B","C","D"] },
+  { q: '你心中的"伙伴"代表？', options: ["一起奔向自由梦想", "强强联合，并肩作战", "互相治愈不离不弃", "彼此靠谱，互不拖累"], key: ["A","B","C","D"] }
+];
+
+const charData = [
+  {name:"蒙奇·D·路飞",img:"img/lufei.png",desc:"你天生向往自由，认定的伙伴拼尽全力守护，想法简单直接、敢闯敢赌，不纠结复杂利弊，永远为梦想热血。",A:8,B:2,C:6,D:2},
+  {name:"罗罗诺亚·索隆",img:"img/suolong.png",desc:"目标感极强、话少靠谱，有自己的原则底线，认准的路会咬牙坚持，偶尔迷糊，但永远是伙伴最稳后盾。",A:7,B:7,C:4,D:2},
+  {name:"娜美",img:"img/nami.png",desc:"头脑清醒懂权衡，现实又重情义，擅长规划、精打细算，看似爱财，其实内心柔软，愿意为在乎的人付出一切。",A:4,B:7,C:6,D:7},
+  {name:"乌索普",img:"img/wusuopu.png",desc:"胆小但善良，想象力丰富、擅长动脑找巧办法，平时爱吹牛，可伙伴遇险时，一定会鼓起勇气站出来。",A:5,B:6,C:7,D:6},
+  {name:"山治",img:"img/shanzhi.png",desc:"温柔绅士，有自己的道义底线，会细心照顾身边所有人，重视浪漫与体面，护短，愿意为保护女性和同伴挺身而出。",A:6,B:4,C:8,D:4},
+  {name:"乔巴",img:"img/qiaoba.png",desc:"软萌敏感，容易害羞，渴望被接纳，医术温柔，内心渴望变强，被夸奖就会偷偷开心。",A:4,B:3,C:9,D:4},
+  {name:"妮可·罗宾",img:"img/luobin.png",desc:"冷静内敛，观察力超强，心思深沉，不爱主动倾诉，但极度珍视来之不易的同伴，温柔又坚韧。",A:3,B:8,C:7,D:4},
+  {name:"弗兰奇",img:"img/fulanqi.png",desc:"热情外放，脑洞超大，热爱改造创造，性格大大咧咧，重承诺，是团队里可靠的技术后盾。",A:7,B:6,C:5,D:2},
+  {name:"布鲁克",img:"img/buluke.png",desc:"乐观沙雕，擅长调节气氛，看淡生死，温柔体贴，会记住别人的喜好，一直带着浪漫前行。",A:6,B:4,C:8,D:2},
+  {name:"甚平",img:"img/shenping.png",desc:"成熟稳重，懂大局、讲道理，重视仁义与承诺，遇事冷静，会耐心开导身边人，可靠的长辈型。",A:4,B:7,C:8,D:5},
+  {name:"香克斯",img:"img/xiangkesi.png",desc:"格局大，从容洒脱，懂得把握分寸，看重情义，不强求别人，关键时刻出手，自带领袖气场。",A:7,B:6,C:7,D:3},
+  {name:"艾斯",img:"img/aisi.png",desc:"热烈直白，自尊心强，外表桀骜，内心极度渴望被爱，愿意为重要的人赌上性命。",A:9,B:3,C:6,D:2},
+  {name:"萨博",img:"img/sabo.png",desc:"理智清醒，有远大理想，隐忍克制，重视信念，冷静规划，为心中正义持续前行。",A:6,B:9,C:4,D:3},
+  {name:"白胡子",img:"img/baihuzi.png",desc:"把家人看得高于一切，心胸宽广，包容所有人，强大且温柔，愿意庇护弱小。",A:6,B:4,C:9,D:3},
+  {name:"马尔科",img:"img/maerke.png",desc:"从容佛系，心态稳定，温柔靠谱，团队粘合剂，危机面前冷静兜底，不爱争抢风头。",A:4,B:7,C:8,D:3},
+  {name:"卡塔库栗",img:"img/kata.png",desc:"强大自律，重视尊严，共情力强，懂得照顾家人感受，有自己的骄傲，输得起。",A:5,B:8,C:7,D:2},
+  {name:"大妈",img:"img/dama.png",desc:"爱恨浓烈，情绪外放，占有欲强，重视家人，但容易被情绪支配。",A:8,B:2,C:6,D:3},
+  {name:"凯多",img:"img/kaiduo.png",desc:"执着于寻找强者与意义，性格粗暴直接，认定一件事就反复坚持，不服输。",A:9,B:5,C:2,D:2},
+  {name:"黑胡子",img:"img/heihuzi.png",desc:"隐忍野心家，懂得蛰伏等待机会，目标明确，不拘泥常规道义，擅长布局。",A:5,B:8,C:2,D:7},
+  {name:"鹰眼",img:"img/yingyan.png",desc:"享受独处，强大从容，有自己的审美和准则，看淡纷争，只和值得的对手交手。",A:5,B:9,C:3,D:4},
+  {name:"女帝汉库克",img:"img/nvdi.png",desc:"骄傲又纯情，外冷内热，习惯强势伪装，一旦动心就会毫无保留付出。",A:7,B:3,C:7,D:3},
+  {name:"罗",img:"img/luo.png",desc:"心思缜密，话少腹黑，目标清晰，习惯独自扛事，表面冷淡，很珍惜少数信任的伙伴。",A:4,B:9,C:5,D:5},
+  {name:"基德",img:"img/jide.png",desc:"暴躁直接，不服输，攻击性强，有野心，愿意硬碰硬，讨厌被人看不起。",A:9,B:5,C:3,D:3},
+  {name:"基拉",img:"img/jila.png",desc:"温柔内敛，会包容冲动的同伴，习惯隐藏情绪，忠诚，默默配合伙伴。",A:4,B:6,C:8,D:4},
+  {name:"贝波",img:"img/beibo.png",desc:"胆小软萌，容易慌张，忠心耿耿，跟着船长一起冒险，努力跟上大家脚步。",A:3,B:3,C:9,D:6},
+  {name:"冯·克雷",img:"img/fengkele.png",desc:"浪漫讲义气，看重友情，活得热烈真诚，愿意为朋友牺牲自己。",A:8,B:2,C:8,D:2},
+  {name:"克洛克达尔",img:"img/laosha.png",desc:"高傲精明，擅长算计，目标感极强，前期利己，骨子里认可强者。",A:5,B:9,C:2,D:6},
+  {name:"奥尔维亚",img:"img/aoweiya.png",desc:"温柔坚定，愿意为真相与信念承受苦难，有强大的精神信仰。",A:5,B:6,C:8,D:3},
+  {name:"雷利",img:"img/leili.png",desc:"通透佛系，看透世事，随性洒脱，不喜欢拘束，愿意点拨后辈。",A:6,B:7,C:6,D:3},
+  {name:"乌塔",img:"img/wuta.png",desc:"热爱美好，希望所有人幸福，理想主义，情绪敏感，渴望被理解。",A:7,B:3,C:9,D:2},
+  {name:"大和",img:"img/daihe.png",desc:"向往自由，叛逆勇敢，有独立想法，不被身份束缚，敢追随心中正义。",A:9,B:4,C:5,D:2},
+  {name:"斯摩格",img:"img/simoge.png",desc:"坚守自己心中正义，正直较真，认准原则不会轻易妥协，执着追捕目标。",A:6,B:8,C:4,D:3},
+  {name:"达斯琪",img:"img/dasiqi.png",desc:"认真执着，热爱刀剑，有正义感，有点天然呆，努力变强不拖后腿。",A:5,B:6,C:7,D:4},
+  {name:"罗布·路奇",img:"img/luqi.png",desc:"冷酷理性，信奉力量，执行力极强，忠于自己的职责，情绪很少外露。",A:4,B:9,C:2,D:5},
+  {name:"卡库",img:"img/kaku.png",desc:"阳光开朗，业务能力强，忠诚，平时轻松搞笑，认真的时候非常可靠。",A:6,B:7,C:5,D:3},
+  {name:"巴索罗缪·熊",img:"img/xiong.png",desc:"沉默温柔，背负秘密，默默牺牲自己，把温柔留给伙伴。",A:4,B:6,C:9,D:3},
+  {name:"薇薇",img:"img/weiwei.png",desc:"有责任心，心系国民，克制隐忍，明明害怕，依然扛起国家重担。",A:5,B:6,C:8,D:4},
+  {name:"贝尔",img:"img/beier.png",desc:"忠诚守护型，默默守护王族，愿意牺牲自己保护想要守护的人。",A:6,B:5,C:8,D:3},
+  {name:"柯拉松",img:"img/kelasong.png",desc:"温柔善良，害怕暴力，用笨拙方式保护罗，心软，向往温暖。",A:4,B:3,C:9,D:4},
+  {name:"多弗朗明哥",img:"img/mingge.png",desc:"张扬嚣张，看透黑暗，信奉弱肉强食，控制欲强，擅长操纵人心。",A:8,B:8,C:2,D:4},
+  {name:"佩罗娜",img:"img/peiluona.png",desc:"喜欢可爱事物，有点小任性，嘴硬心软，会照顾自己人。",A:5,B:4,C:8,D:5},
+  {name:"耕四郎",img:"img/gengsilang.png",desc:"温和通透，懂得因材施教，内心强大，不执着胜负。",A:4,B:7,C:8,D:3},
+  {name:"阿玉",img:"img/ayu.png",desc:"纯粹善良，治愈系，相信善意，用自己小小的力量帮助别人。",A:4,B:2,C:9,D:3},
+  {name:"光月御田",img:"img/yutian.png",desc:"热烈奔放，热爱冒险，坦荡洒脱，愿意为约定和家国赴死。",A:9,B:4,C:6,D:2},
+  {name:"日和",img:"img/rihe.png",desc:"外表柔弱，内心坚韧，在黑暗里隐忍活着，懂得等待时机。",A:3,B:5,C:9,D:5},
+  {name:"锦卫门",img:"img/jinweimen.png",desc:"重情义，守旧忠义，有担当，偶尔搞笑，誓死守护主君。",A:7,B:5,C:7,D:3},
+  {name:"加洛特",img:"img/jialuote.png",desc:"好奇心爆棚，活泼元气，热爱新世界，勇敢，满月会爆发力量。",A:8,B:4,C:7,D:2},
+  {name:"布鲁诺",img:"img/buluno.png",desc:"冷静寡言，服从命令，情绪稳定，不会被私情干扰判断。",A:3,B:9,C:3,D:5},
+  {name:"巴基",img:"img/baji.png",desc:"惜命爱财，有点胆小，运气超好，嘴上功利，关键时刻不会卖队友。",A:4,B:3,C:5,D:9},
+  {name:"达旦",img:"img/dadan.png",desc:"嘴硬心软，刀子嘴豆腐心，嘴上嫌弃，拼命护着路飞艾斯萨博。",A:7,B:3,C:8,D:4}
+];
+
+let currentQ = 1;
+const totalQ = questions.length;
+let ans = {};
+
+const questionText = document.getElementById("questionText");
+const optionsBox = document.getElementById("optionsBox");
+const pageCount = document.getElementById("pageCount");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const progressFill = document.getElementById("progressFill");
+
+function renderQuestion() {
+  const q = questions[currentQ - 1];
+  questionText.textContent = q.q;
+  pageCount.textContent = `第 ${currentQ} 题 / 共 ${totalQ} 题`;
+  progressFill.style.width = `${(currentQ / totalQ) * 100}%`;
+
+  optionsBox.innerHTML = "";
+  q.options.forEach((opt, i) => {
+    const div = document.createElement("div");
+    div.className = "option";
+    if (ans[currentQ] === q.key[i]) div.classList.add("selected");
+    div.innerHTML = `<div class="num">${i + 1}</div><div>${opt}</div>`;
+    div.onclick = () => {
+      ans[currentQ] = q.key[i];
+      renderQuestion();
+    };
+    optionsBox.appendChild(div);
+  });
+
+  prevBtn.disabled = currentQ === 1;
+  nextBtn.textContent = currentQ === totalQ ? "提交看结果" : "下一题";
+}
+
+prevBtn.onclick = () => {
+  if (currentQ > 1) {
+    currentQ--;
+    renderQuestion();
+  }
+};
+
+nextBtn.onclick = () => {
+  if (!ans[currentQ]) {
+    alert("请选择一项答案！");
+    return;
+  }
+  if (currentQ < totalQ) {
+    currentQ++;
+    renderQuestion();
+  } else {
+    calcResult();
+  }
+};
+
+function calcResult() {
+  const score = { A: 0, B: 0, C: 0, D: 0 };
+  for (const k in ans) score[ans[k]]++;
+
+  let best = null;
+  let maxSum = -Infinity;
+  charData.forEach(c => {
+    const s = score.A * c.A + score.B * c.B + score.C * c.C + score.D * c.D;
+    if (s > maxSum) {
+      maxSum = s;
+      best = c;
+    }
+  });
+
+  document.getElementById("resultName").textContent = best.name;
+  document.getElementById("resultDesc").innerHTML = `<strong>你像 ${best.name} 的地方：</strong><br>${best.desc}`;
+  document.getElementById("resultImg").src = best.img;
+  document.getElementById("resultImg").alt = best.name;
+
+  document.getElementById("quizWrap").classList.add("hidden");
+  document.getElementById("resultBox").classList.remove("hidden");
+}
+
+function restartQuiz() {
+  ans = {};
+  currentQ = 1;
+  document.getElementById("resultBox").classList.add("hidden");
+  document.getElementById("quizWrap").classList.remove("hidden");
+  renderQuestion();
+}
+
+renderQuestion();
+</script>
+</body>
+</html>
+<!-- （注：内容由AI生成） -->
